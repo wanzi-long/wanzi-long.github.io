@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026年6月8日 蜀道集团共享文件夹调试报告</title>
+<style>
+:root { --bg:#fff; --card:#f8f9fa; --text:#212529; --danger:#f8d7da; --danger-text:#721c24; --success:#d4edda; --success-text:#155724; --accent:#0d6efd; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:"Microsoft YaHei","Segoe UI",sans-serif; background:var(--bg); color:var(--text); line-height:1.7; padding:20px; max-width:900px; margin:0 auto; }
+h1 { font-size:1.8em; margin-bottom:8px; }
+h2 { font-size:1.3em; margin:24px 0 10px; padding-bottom:6px; border-bottom:2px solid #dee2e6; }
+h3 { font-size:1.1em; margin-bottom:10px; }
+.subtitle { color:#6c757d; margin-bottom:24px; font-size:0.95em; }
+.card { background:var(--card); border-radius:8px; padding:20px; margin-bottom:20px; border-left:4px solid var(--accent); }
+.card h3 { margin-bottom:10px; }
+.danger { background:var(--danger); color:var(--danger-text); border-radius:8px; padding:16px; margin-bottom:20px; border-left:4px solid #dc3545; }
+.success { background:var(--success); color:var(--success-text); border-radius:8px; padding:16px; margin-bottom:20px; border-left:4px solid #28a745; }
+table { width:100%; border-collapse:collapse; margin:12px 0; }
+th { background:#f1f3f5; font-weight:600; padding:10px 12px; text-align:left; border-bottom:2px solid #dee2e6; }
+td { padding:10px 12px; border-bottom:1px solid #e9ecef; }
+code { background:#e9ecef; padding:2px 6px; border-radius:4px; font-family:"Consolas","Courier New",monospace; font-size:0.9em; }
+.step { margin-left:8px; }
+.stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin:16px 0; }
+.stat { background:var(--card); border-radius:8px; padding:16px; text-align:center; }
+.stat .num { font-size:2em; font-weight:700; color:var(--accent); }
+.stat .label { color:#6c757d; font-size:0.9em; margin-top:4px; }
+.highlight { background:#fff3cd; border-left:4px solid #ffc107; padding:12px 16px; border-radius:4px; margin:12px 0; }
+.section-divider { border:none; border-top:3px solid var(--accent); margin:40px 0 20px; }
+.footer { text-align:center; color:#adb5bd; font-size:0.85em; margin-top:40px; padding-top:16px; border-top:1px solid #dee2e6; }
+</style>
+</head>
+<body>
+<h1>📋 蜀道集团共享文件夹调试报告</h1>
+<p class="subtitle">2026年6月8日 · 蜀道集团总部 · 2511室 & 2035室</p>
+
+<hr class="section-divider">
+<h2>一、2511室 — C盘深度清理</h2>
+<h1>💻 sgzg2523 — C盘深度清理报告</h1>
+<p class="subtitle">蜀道集团 · DELL 用户 · 2026年6月8日</p>
+
+<!-- 1. 问题 -->
+<div class="danger">
+<h3>📋 问题</h3>
+<p>C盘总量220GB，使用率高达<strong>94.8%</strong>，仅剩11.5GB可用空间。系统运行缓慢，磁盘空间严重不足。</p>
+<p>同日发生华为PixLab扫描仪驱动卸载事故，导致桌面文件全部丢失，已通过卷影副本完整恢复。</p>
+</div>
+
+<!-- 2. 根因 -->
+<div class="card">
+<h3>🔍 根因：C盘空间占用分析</h3>
+<table>
+<tr><th>占用项目</th><th>大小</th><th>说明</th></tr>
+<tr><td>WPS云盘企业模板缓存</td><td>9.2 GB</td><td>蜀道集团全员共享模板，存储在C盘</td></tr>
+<tr><td>WPS软件缓存 (kingsoft)</td><td>7.6 GB</td><td>WPS插件包、备份、日志</td></tr>
+<tr><td>钉钉聊天缓存 + 旧版本</td><td>6.2 GB</td><td>EAppFiles小程序缓存 + 3个旧版本残留</td></tr>
+<tr><td>微信/QQ/腾讯缓存</td><td>4.3 GB</td><td>聊天图片视频自动下载缓存</td></tr>
+<tr><td>Windows临时文件</td><td>1.3 GB</td><td>系统+用户临时文件、崩溃转储</td></tr>
+<tr style="font-weight:600;background:#f1f3f5;"><td>合计可清理</td><td>28.6 GB</td><td></td></tr>
+</table>
+</div>
+
+<!-- 3. 补充说明 -->
+<div class="card">
+<h3>💡 补充说明：华为PixLab事件</h3>
+<p>本次操作期间，用户使用Geek Uninstaller卸载<strong>HUAWEI PixLab Series</strong>扫描仪驱动。该驱动安装路径被错误地设在<code>C:\Users\DELL\Desktop\</code>，卸载时将整个桌面文件清空。</p>
+<p class="highlight"><strong>根因确认：</strong>Windows事件日志(Event ID 11724)记录显示「产品: HUAWEI PixLab Series -- 成功地完成了删除」时间为 2026-06-08 14:41:37。不是病毒，是安装路径设计缺陷。</p>
+<p>已通过Wondershare Recoverit + 卷影副本（5:40AM快照）完整恢复所有桌面文件。</p>
+</div>
+
+<!-- 4. 修复过程 -->
+<div class="card">
+<h3>🛠 修复过程</h3>
+
+<h4>阶段一：桌面文件恢复</h4>
+<code>vssadmin list shadows</code> 发现凌晨5:40卷影副本<br>
+<code>mklink /d C:\vss_shadow \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy6\</code> 挂载快照<br>
+<code>robocopy C:\vss_shadow\Users\DELL\Desktop C:\Users\DELL\Desktop /E /XO</code> 补回缺失的5个文件夹+30+文件<br>
+
+<h4>阶段二：临时文件清理</h4>
+<code>Remove-Item C:\Windows\Temp\* -Recurse -Force</code> 清系统临时文件 0.7 GB<br>
+<code>Remove-Item C:\Users\DELL\AppData\Local\Temp\* -Recurse -Force</code> 清用户临时文件 0.4 GB<br>
+<code>Remove-Item C:\Users\DELL\AppData\Local\CrashDumps\* -Recurse -Force</code> 清崩溃转储 168 MB<br>
+
+<h4>阶段三：WPS云盘缓存清理</h4>
+<p>WPS云盘受<strong>Windows Cloud Files Filter (cldflt)</strong>内核驱动保护，命令行无法搬运。用户在WPS云文档设置中将缓存位置改至D盘后，成功删除C盘旧缓存。</p>
+<code>rmdir /s /q C:\Users\DELL\WPSDrive</code> 删除9.2 GB企业模板缓存<br>
+
+<h4>阶段四：WPS软件缓存搬家</h4>
+<code>robocopy C:\Users\DELL\AppData\Roaming\kingsoft D:\WPS_Cache /E /MOVE</code> 搬移5.7 GB至D盘<br>
+
+<h4>阶段五：钉钉缓存清理</h4>
+<code>rmdir /s /q ...AppData\Roaming\DingTalk\119693839_v2\EAppFiles</code> 清3.0 GB小程序缓存<br>
+<code>rmdir /s /q ...AppData\Roaming\DingTalk\119693839_v2\resource_cache</code> 清722 MB媒体缓存<br>
+<code>rmdir ...AppData\Local\DingTalk_91 / _108 / _133</code> 清3个旧版本 1.5 GB<br>
+
+<h4>阶段六：微信/QQ缓存清理</h4>
+<code>rmdir ...AppData\Roaming\Tencent\xwechat</code> 清微信缓存 1.8 GB<br>
+<code>rmdir ...AppData\Roaming\Tencent\WeChat</code> 清微信缓存 1.0 GB<br>
+<code>rmdir ...AppData\Roaming\Tencent\QQ</code> 清QQ缓存 687 MB<br>
+<code>rmdir ...AppData\Roaming\Tencent\Androws</code> 清手游助手 218 MB<br>
+
+<h4>阶段七：建立符号链接 — 永久分流到D盘</h4>
+<p>将所有缓存目录搬至D盘后，在原C盘位置建立<strong>目录联接（Junction）</strong>，软件以为数据还在C盘，实际自动写入D盘。</p>
+<code>robocopy ...kingsoft D:\WPS_Cache /E /MOVE</code> → <code>mklink /j ...kingsoft D:\WPS_Cache</code><br>
+<code>robocopy ...DingTalk D:\DingTalk_Cache /E /MOVE</code> → <code>mklink /j ...DingTalk D:\DingTalk_Cache</code><br>
+<code>robocopy ...Tencent\xwechat D:\WeChat_Cache /E /MOVE</code> → <code>mklink /j ...xwechat D:\WeChat_Cache</code><br>
+<code>mklink /j ...Tencent\WeChat D:\WeChat_Cache</code>（微信）<br>
+<code>mklink /j ...Tencent\QQ D:\QQ_Cache</code>（QQ）<br>
+</div>
+
+<!-- 5. 删除清单 -->
+<div class="card">
+<h3>🗑 删除清单</h3>
+<table>
+<tr><th>类型</th><th>路径</th><th>大小</th></tr>
+<tr><td>文件夹</td><td><code>C:\Windows\Temp\*</code></td><td>0.7 GB</td></tr>
+<tr><td>文件夹</td><td><code>C:\Users\DELL\AppData\Local\Temp\*</code></td><td>0.4 GB</td></tr>
+<tr><td>文件夹</td><td><code>C:\Users\DELL\AppData\Local\CrashDumps\*</code></td><td>168 MB</td></tr>
+<tr><td>文件夹</td><td><code>C:\Users\DELL\WPSDrive</code></td><td>9.2 GB</td></tr>
+<tr><td>文件夹</td><td><code>C:\Users\DELL\AppData\Roaming\kingsoft</code> → 搬至D盘</td><td>7.6 GB</td></tr>
+<tr><td>文件夹</td><td><code>...\DingTalk\119693839_v2\EAppFiles</code></td><td>3.0 GB</td></tr>
+<tr><td>文件夹</td><td><code>...\DingTalk\119693839_v2\resource_cache</code></td><td>722 MB</td></tr>
+<tr><td>文件夹</td><td><code>...\DingTalk\log</code></td><td>104 MB</td></tr>
+<tr><td>文件夹</td><td><code>...\AppData\Local\DingTalk_91</code></td><td>0.4 GB</td></tr>
+<tr><td>文件夹</td><td><code>...\AppData\Local\DingTalk_108</code></td><td>0.3 GB</td></tr>
+<tr><td>文件夹</td><td><code>...\AppData\Local\DingTalk_133</code></td><td>0.8 GB</td></tr>
+<tr><td>文件夹</td><td><code>...\Tencent\xwechat</code></td><td>1.8 GB</td></tr>
+<tr><td>文件夹</td><td><code>...\Tencent\WeChat</code></td><td>1.0 GB</td></tr>
+<tr><td>文件夹</td><td><code>...\Tencent\QQ</code></td><td>687 MB</td></tr>
+<tr><td>文件夹</td><td><code>...\Tencent\Androws</code></td><td>218 MB</td></tr>
+<tr><td>文件夹</td><td><code>...\Tencent\yuanbao</code></td><td>101 MB</td></tr>
+</table>
+</div>
+
+<!-- 6. 后续注意事项 -->
+<div class="card">
+<h3>📝 后续注意事项</h3>
+<h4>需要知道</h4>
+<ul>
+<li>WPS云盘模板已从云上移至D盘，下次需要模板时WPS会自动从云端下载</li>
+<li>WPS软件缓存已搬至 <code>D:\WPS_Cache</code>，通过目录联接（Junction）自动分流</li>
+<li>钉钉缓存已搬至 <code>D:\DingTalk_Cache</code>，通过目录联接自动分流</li>
+<li>微信缓存已搬至 <code>D:\WeChat_Cache</code>，QQ缓存已搬至 <code>D:\QQ_Cache</code>，均通过目录联接分流</li>
+<li>钉钉/微信/QQ聊天记录（文字）未受影响，图片视频缓存后续自动存入D盘</li>
+</ul>
+<h4>不影响的功能</h4>
+<ul>
+<li>WPS Office 正常使用 ✓</li>
+<li>钉钉聊天、审批、打卡 ✓</li>
+<li>微信/QQ聊天 ✓</li>
+<li>WPS云文档、云盘 ✓</li>
+</ul>
+<h4>已禁用/清理的功能</h4>
+<ul>
+<li>Dell SupportAssist等工具未卸载，保留不动</li>
+<li>华为PixLab驱动已卸载，桌面原安装文件夹未恢复</li>
+</ul>
+</div>
+
+<!-- 7. 修复统计 -->
+<div class="stat-grid">
+<div class="stat"><div class="num">208.6</div><div class="label">清理前已用 (GB)</div></div>
+<div class="stat"><div class="num">192.2</div><div class="label">清理后已用 (GB)</div></div>
+<div class="stat"><div class="num">16.4</div><div class="label">释放空间 (GB)</div></div>
+<div class="stat"><div class="num">94.8→87.3</div><div class="label">使用率变化 (%)</div></div>
+<div class="stat"><div class="num">5+30</div><div class="label">恢复文件夹+文件</div></div>
+<div class="stat"><div class="num">5</div><div class="label">目录联接数</div></div>
+<div class="stat"><div class="num">4</div><div class="label">跳过Dell工具</div></div>
+</div>
+
+<!-- 8. 最终验证 -->
+<div class="success">
+<h3>✅ 最终验证结果</h3>
+<p><strong>C盘空间：</strong>清理前 11.5 GB → 清理后 <strong>28 GB</strong>，使用率从 94.8% 降至 <strong>87.3%</strong>。</p>
+<p><strong>桌面文件：</strong>已通过卷影副本完整恢复，无数据丢失。</p>
+<p><strong>WPS、钉钉、微信、QQ：</strong>缓存已全部搬至D盘，通过目录联接（Junction）自动分流，功能正常。</p>
+<p><strong>D盘缓存目录：</strong><code>D:\WPS_Cache</code> | <code>D:\DingTalk_Cache</code> | <code>D:\WeChat_Cache</code> | <code>D:\QQ_Cache</code></p>
+<p><strong>华为扫描仪：</strong>已卸载，桌面不再有驱动文件夹。</p>
+</div>
+
+<div class="footer">诊断工具：丸子龍 便携 AI 工具包 · 报告时间：2026年6月8日</div>
+
+<hr class="section-divider">
+<h2>二、2035室 — 共享文件访问诊断</h2>
+<h1>🖥 LAPTOP-CB3AC7DJ — 共享文件访问诊断报告</h1>
+
+<div class="danger">
+<strong>📋 问题</strong><br>
+新电脑无法访问局域网共享文件夹。两个目标主机均无法正常列出共享内容：
+<ul>
+  <li><code>\\172.16.27.254</code> — 能打开窗口但内容为空</li>
+  <li><code>\\172.16.27.24</code>（Laptop-d2c8j7ul）— 主机名 DNS 解析不到，IP 能通但目录列不出</li>
+</ul>
+</div>
+
+<h2>🔍 根因</h2>
+
+<table>
+<tr><th>问题</th><th>主机</th><th>根因</th><th>严重程度</th></tr>
+<tr>
+  <td>SMB 协议版本不匹配</td>
+  <td>172.16.27.254</td>
+  <td>服务器仅支持 SMBv1，本机 Windows 默认禁用 SMBv1</td>
+  <td style="color:var(--red);font-weight:600">高</td>
+</tr>
+<tr>
+  <td>主机名 DNS 解析失败</td>
+  <td>Laptop-d2c8j7ul</td>
+  <td>DNS 服务器未注册该主机名，NetBIOS 广播可找到</td>
+  <td style="color:#fd7e14;font-weight:600">中</td>
+</tr>
+<tr>
+  <td>共享目录列为空</td>
+  <td>172.16.27.24</td>
+  <td>Reasonix 沙箱限制（非真实系统问题），真实系统可正常访问</td>
+  <td style="color:#6c757d">低（误判）</td>
+</tr>
+</table>
+
+<h2>💡 补充说明</h2>
+<div class="card">
+<strong>关于 Reasonix 沙箱</strong>：诊断过程中发现 <code>dir</code>、<code>pushd</code> 等命令无法访问 UNC 网络路径，而 <code>net view</code>、<code>net use</code>、<code>ping</code> 正常。经排查确认为 Reasonix 文件系统沙箱不支持 UNC 路径，<strong>不是本机系统问题</strong>。用户手动 Win+R 访问共享正常。
+</div>
+
+<h2>🛠 修复过程</h2>
+
+<div class="card">
+<strong>阶段 1：基础网络连通性测试</strong><br>
+<code>ping 172.16.27.254</code> — ✅ 通，1ms<br>
+<code>Test-NetConnection 172.16.27.254 -Port 445</code> — ❌ 初始不通，SMB 端口关闭
+</div>
+
+<div class="card">
+<strong>阶段 2：开启 SMB 1.0 协议</strong><br>
+<code>dism /online /enable-feature /featurename:SMB1Protocol-Client /all</code><br>
+启用后需重启电脑生效。重启后 445 端口正常，<code>\\172.16.27.254</code> 可访问。
+</div>
+
+<div class="card">
+<strong>阶段 3：定位 Laptop-d2c8j7ul</strong><br>
+子网扫描 + NetBIOS 查询，确认 <code>Laptop-d2c8j7ul = 172.16.27.24</code><br>
+<code>net use \\172.16.27.24\交叉检查共享文件 "123456" /user:jky</code> — ✅ 认证通过
+</div>
+
+<div class="card">
+<strong>阶段 4：沙箱误判排除</strong><br>
+通过 <code>dir \\127.0.0.1\C$\Windows</code> 验证沙箱无法访问任何 UNC 路径，确认目录空为误判。<br>
+用户手动 Win+R 访问正常。
+</div>
+
+<div class="card">
+<strong>阶段 5：创建快捷方式</strong><br>
+用户在桌面手动创建了 <code>交叉检查共享文件.url</code> 快捷方式，指向 <code>\\172.16.27.24\交叉检查共享文件</code>。
+</div>
+
+<h2>📊 修复统计</h2>
+<div class="stat-grid">
+<div class="stat"><div class="num">2</div><div class="label">问题已诊断</div></div>
+<div class="stat"><div class="num">5</div><div class="label">排查阶段</div></div>
+<div class="stat"><div class="num">2</div><div class="label">主机已定位</div></div>
+<div class="stat"><div class="num">1</div><div class="label">协议已启用</div></div>
+</div>
+
+<h2>✅ 最终验证结果</h2>
+<div class="success">
+✅ <code>\\172.16.27.254</code> — 已启用 SMB1，可正常访问<br>
+✅ <code>\\172.16.27.24\交叉检查共享文件</code> — 凭据 jky/123456，可正常访问<br>
+✅ 桌面快捷方式已创建
+</div>
+
+<h2>📝 后续注意事项</h2>
+<table>
+<tr><td>🔐</td><td>SMBv1 存在安全风险（WannaCry 等），仅限内网使用，勿暴露公网</td></tr>
+<tr><td>🔄</td><td>建议联系 172.16.27.254 的管理员升级系统，使其支持 SMBv2/v3</td></tr>
+<tr><td>📁</td><td>共享路径快捷方式已保存在桌面，后续直接双击即可访问</td></tr>
+</table>
+
+<div class="footer">诊断工具：丸子龍 便携 AI 工具包 · 报告时间：2026年6月8日</div>
+
+<div class="footer">久鼎汇信息工程 · 2026年6月8日</div>
+</body>
+</html>

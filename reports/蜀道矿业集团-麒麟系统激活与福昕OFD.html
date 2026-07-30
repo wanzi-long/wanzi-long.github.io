@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>蜀道矿业集团 — 麒麟系统激活+福昕OFD安装报告</title>
+<style>
+  :root { --bg:#fff; --card:#f8f9fa; --border:#dee2e6; --text:#212529; --dim:#6c757d; --green:#198754; --red:#dc3545; --yellow:#ffc107; --blue:#0d6efd; --radius:10px; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:-apple-system,'Microsoft YaHei',sans-serif; padding:30px; line-height:1.8; max-width:900px; margin:0 auto; }
+  h1 { font-size:26px; margin-bottom:4px; }
+  h2 { font-size:19px; margin:32px 0 12px; padding-bottom:6px; border-bottom:2px solid var(--blue); }
+  h3 { font-size:16px; margin:20px 0 8px; }
+  .subtitle { color:var(--dim); font-size:14px; margin-bottom:24px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px 24px; margin-bottom:14px; }
+  .highlight { background:#fff3cd; border-left:4px solid var(--yellow); padding:12px 16px; margin:12px 0; border-radius:4px; }
+  .danger { background:#f8d7da; border-left:4px solid var(--red); padding:12px 16px; margin:12px 0; border-radius:4px; }
+  .success { background:#d1e7dd; border-left:4px solid var(--green); padding:12px 16px; margin:12px 0; border-radius:4px; }
+  .step { background:#e7f1ff; border-left:4px solid var(--blue); padding:10px 16px; margin:8px 0; border-radius:4px; }
+  table { width:100%; border-collapse:collapse; margin:10px 0 18px; font-size:14px; }
+  th,td { padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); }
+  th { background:#f1f3f5; font-weight:600; }
+  .ok { color:var(--green); font-weight:bold; }
+  .bad { color:var(--red); font-weight:bold; }
+  code { background:#e9ecef; padding:2px 6px; border-radius:3px; font-size:13px; }
+  ul,ol { margin-left:22px; }
+  li { margin:5px 0; }
+  .footer { text-align:center; color:var(--dim); font-size:12px; margin-top:40px; padding:20px 0; border-top:1px solid var(--border); }
+  .stat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; }
+  .stat { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:14px 18px; text-align:center; }
+  .stat-num { font-size:30px; font-weight:700; }
+  .stat-lbl { font-size:12px; color:var(--dim); margin-top:2px; }
+  @media print { body { padding:0; } .card { break-inside:avoid; } }
+</style>
+</head>
+<body>
+
+<h1>🔐 蜀道矿业集团 — 麒麟系统激活 + 福昕OFD安装报告</h1>
+<div class="subtitle">客户：四川蜀道矿业集团股份有限公司 · 服务序列号：414317020 · 日期：2026年6月5日</div>
+
+<h2>📋 任务</h2>
+<div class="danger">
+涉密环境（全程离线）下，为麒麟 Kylin V10-SP1 系统完成操作系统激活，并安装激活福昕 OFD 套件。
+</div>
+
+<h2>🔍 环境信息</h2>
+<table>
+  <tr><th>项目</th><th>详情</th></tr>
+  <tr><td>客户</td><td>四川蜀道矿业集团股份有限公司</td></tr>
+  <tr><td>服务序列号</td><td><code>414317020</code></td></tr>
+  <tr><td>操作系统</td><td>麒麟 Kylin-Desktop-V10-SP1-2503-Release-20250430（海光版）</td></tr>
+  <tr><td>授权书编号</td><td>FXKP-SW-202604059</td></tr>
+  <tr><td>福昕序列号</td><td><code>FRSIZ-L1037-649FF-PJVKQ-C7C1B</code></td></tr>
+  <tr><td>网络环境</td><td class="bad">涉密 — 全程离线</td></tr>
+  <tr><td>传输介质</td><td>U 盘（已杀毒）</td></tr>
+  <tr><td>授权到期</td><td>2027-04-20</td></tr>
+</table>
+
+<h2>🛠 操作过程</h2>
+
+<div class="card">
+<h3>阶段 0：上门准备</h3>
+<table>
+  <tr><th>携带物品</th><th>说明</th></tr>
+  <tr><td>U 盘（已杀毒）</td><td>拷贝授权文件进涉密电脑</td></tr>
+  <tr><td><code>.kyinfo</code> + <code>LICENSE</code></td><td>麒麟系统授权文件（.kyinfo 为隐藏文件）</td></tr>
+  <tr><td>管理员二维码 PDF</td><td>「414317020-管理员二维码及激活校验码.pdf」— 含激活校验码</td></tr>
+  <tr><td>福昕 fpmkey 授权文件</td><td>离线激活密钥文件</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>阶段 1：制作 Ubuntu Live USB（笔记本电脑端）</h3>
+<p>麒麟系统密码忘记，需通过 Ubuntu Live USB 进入系统后重置密码。制作过程遇多次失败：</p>
+<div class="step"><strong>尝试 1-3：</strong>PowerShell 直写 ISO → 磁盘被锁 / 权限不足 → 失败</div>
+<div class="step"><strong>尝试 4：</strong>DiskGenius 清空 U 盘卷 → 仍报占用</div>
+<div class="step"><strong>尝试 5：</strong>下载 Rufus（代理故障，另辟途径下载）</div>
+<div class="step"><strong>成功：</strong>Rufus 刷入 Ubuntu 24.04.4 desktop ISO → U 盘启动盘就绪</div>
+</div>
+
+<div class="card">
+<h3>阶段 2：Kylin 机器 U 盘启动</h3>
+<p>插入目标 Kylin 机器，F12 选择 USB 启动：</p>
+<div class="step">首次进入 GRUB 菜单而非 Ubuntu 桌面 → 排查 BIOS 设置</div>
+<div class="step">联想开天备系统干扰 → F2 进入 BIOS → 确认启动方式为 UEFI</div>
+<div class="step">Secure Boot 选项未找到（Kylin 定制 BIOS 无此选项）</div>
+<div class="step">格式化选项调整后成功进入 Ubuntu Live 桌面 ✅</div>
+</div>
+
+<div class="card">
+<h3>阶段 3：麒麟系统激活</h3>
+<p>进入 Kylin 系统后，通过 U 盘拷贝授权文件：</p>
+
+<div class="step"><strong>方式一（图形界面）：</strong><br>
+  右键「计算机」→「属性」→「激活」→「授权文件导入」→ <code>Ctrl+H</code> 显示隐藏文件 → 选中 <code>.kyinfo</code> + <code>LICENSE</code> → 导入</div>
+
+<div class="step"><strong>方式二（命令行备选）：</strong><br>
+<code>sudo cp .kyinfo LICENSE /etc/</code><br>
+<code>sudo nklicadm -i /etc/.kyinfo</code><br>
+<code>nklicadm -s</code>（验证）</div>
+
+<div class="step"><strong>绑定管理员 + 获取激活码：</strong><br>
+  输入序列号 <code>414317020</code> → 界面显示二维码 → 微信扫码 → 输入 PDF 中的校验码 → 微信返回激活码 → 粘贴输入 → 激活完成</div>
+
+<div class="success"><strong>✓ 麒麟系统激活成功，重启后验证通过。</strong></div>
+</div>
+
+<div class="card">
+<h3>阶段 4：福昕 OFD 套件安装激活</h3>
+<div class="step"><strong>步骤 1：</strong>安装 OFD 套件（海光版银河麒麟专用安装包）</div>
+<div class="step"><strong>步骤 2：</strong>首次启动 → 产品激活界面 → 选择「离线激活」</div>
+<div class="step"><strong>步骤 3：</strong>输入序列号 <code>FRSIZ-L1037-649FF-PJVKQ-C7C1B</code></div>
+<div class="step"><strong>步骤 4：</strong>打开 <code>fpmkey.txt</code> 授权文件 → 全选复制 → 粘贴至注册界面 → 点击「完成」</div>
+<div class="step"><strong>步骤 5：</strong>确认授权文件替换 → 授权注册成功 → 重启生效</div>
+<div class="success"><strong>✓ 福昕 OFD 套件激活成功。</strong></div>
+</div>
+
+<h2>📊 工作统计</h2>
+<div class="stat-grid">
+  <div class="stat"><div class="stat-num" style="color:var(--red);">3</div><div class="stat-lbl">U盘制作尝试次数</div></div>
+  <div class="stat"><div class="stat-num ok">2</div><div class="stat-lbl">成功激活的软件</div></div>
+  <div class="stat"><div class="stat-num ok">1</div><div class="stat-lbl">涉密环境</div></div>
+  <div class="stat"><div class="stat-num ok">414317020</div><div class="stat-lbl">服务序列号</div></div>
+</div>
+
+<h2>📝 后续注意事项</h2>
+<ol>
+  <li><strong>授权到期日：2027-04-20</strong>，到期前需续期</li>
+  <li>涉密环境禁止联网，后续维护同样需 U 盘离线操作</li>
+  <li>Kylin BIOS 无 Secure Boot 选项，UEFI 启动即可</li>
+</ol>
+
+<h2>✅ 最终验证</h2>
+<div class="success">
+<strong>麒麟系统：</strong><br>
+• <code>nklicadm -s</code> 返回「已授权」✓<br>
+• 系统属性显示正式授权 ✓<br>
+<br>
+<strong>福昕 OFD：</strong><br>
+• 套件正常启动，无试用提示 ✓<br>
+• 授权书编号 FXKP-SW-202604059 ✓
+</div>
+
+<div class="footer">
+  诊断工具：丸子龍 便携 AI 工具包 · 报告时间：2026年6月5日 · 笔记本端 Reasonix 会话记录提取
+</div>
+
+</body>
+</html>

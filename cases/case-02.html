@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>蜀道集团共享文件夹调试 · 唐浩翔运维案例报告</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; background: #f4f9fb; }
+  .bar {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 14px 28px;
+    background: rgba(255,255,255,0.85); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(8,80,110,0.12);
+  }
+  .bar .l { display: flex; align-items: center; gap: 14px; min-width: 0; }
+  .bar a.back { color: #0e7a9c; text-decoration: none; font-size: 13.5px; font-weight: 600; white-space: nowrap; }
+  .bar h1 { font-size: 16px; color: #12222e; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar a.home {
+    padding: 8px 18px; border-radius: 999px; background: #0e7a9c; color: #fff;
+    text-decoration: none; font-size: 13px; font-weight: 600; white-space: nowrap;
+  }
+  iframe { display: block; width: 100%; height: calc(100vh - 57px); border: none; }
+  @media (max-width: 720px) {
+    .bar { padding: 12px 14px; }
+    .bar h1 { font-size: 13.5px; }
+  }
+</style>
+</head>
+<body>
+  <div class="bar">
+    <div class="l">
+      <a class="back" href="/#cases">← 返回案例集</a>
+      <h1>蜀道集团共享文件夹调试</h1>
+    </div>
+    <a class="home" href="/">简历站首页</a>
+  </div>
+  <iframe src="/reports/2026%E5%B9%B46%E6%9C%888%E6%97%A5%E8%9C%80%E9%81%93%E9%9B%86%E5%9B%A2%E5%85%B1%E4%BA%AB%E6%96%87%E4%BB%B6%E5%A4%B9%E8%B0%83%E8%AF%95.html" title="蜀道集团共享文件夹调试"></iframe>
+</body>
+</html>
