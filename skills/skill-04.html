@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><title>wanggan-dojo 网感训练器 · 设计文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+@media screen {
+  body { font-size: 15px; line-height: 1.75; max-width: 880px; margin: 0 auto; padding: 0 20px 64px; background: #f4f9fb; }
+  h2 { font-size: 18px; margin: 22px 0 9px; }
+  h3 { font-size: 15.5px; }
+  table { font-size: 14px; }
+  .doc-head { margin-top: 18px; }
+  pre { overflow-x: auto; }
+}
+.site-bar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 20px; margin: 0 -20px 4px; background: rgba(255,255,255,.85); backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(8,80,110,.12); font-family: "PingFang SC","Microsoft YaHei",sans-serif; }
+.site-bar .l { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.site-bar a { text-decoration: none; }
+.site-bar a.back { color: #0e7a9c; font-size: 13.5px; font-weight: 600; white-space: nowrap; }
+.site-bar h1 { font-size: 15px; color: #12222e; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.site-bar .r { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.site-bar a.pdf { padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(14,122,156,.35); color: #0e7a9c; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.site-bar a.home { padding: 7px 16px; border-radius: 999px; background: #0e7a9c; color: #fff; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+@media (max-width: 720px) { .site-bar { padding: 10px 12px; } .site-bar h1 { font-size: 13px; } .site-bar a.pdf { display: none; } }
+</style>
+</head>
+<body class="theme-orange">
+<div class="site-bar"><div class="l"><a class="back" href="/#skills">← 返回 Skill 合集</a><h1>wanggan-dojo · 网感训练器</h1></div><div class="r"><a class="pdf" href="/docs/skill-04-wanggan-dojo.pdf" target="_blank" rel="noopener">PDF 附件</a><a class="home" href="/">简历站首页</a></div></div>
+
+
+<div class="doc-head">
+  <div class="kicker">AI AGENT SKILL · 游戏化训练系统 · 数据直觉</div>
+  <h1>wanggan-dojo · 网感与流量直觉训练器</h1>
+  <div class="tagline">书给框架，拆解读语感。每天拆 3 条爆款，每周一场隐数据盲测大考，XP 五维分开涨——把"网感"这种玄学变成可校准、可累积的能力。</div>
+  <div class="meta">
+    <span>作者：唐浩翔</span><span>形态：Agent 技能（SKILL.md）+ 数据脚本 + 状态机</span>
+    <span>B站 · AI/知识/健身科普赛道</span><span>游戏化：XP · 段位 · 连击</span>
+  </div>
+</div>
+
+<h2>1. 系统定位</h2>
+<p>面向内容创作者的<strong>练功房</strong>：用真实爆款做教材，用盲测做校准，用游戏化状态机做坚持。核心判断：<span class="hl">网感不是天赋，是"预测 → 对答案 → 校准"的循环次数</span>。</p>
+
+<h2>2. 四种模式（触发词路由）</h2>
+<pre><code>"开练/今日练功"      → Mode A 每日练功（3 条 × 拆解卡）
+"继续练功"           → Mode A 续跑（读 pending.json 断点续传）
+"大考/盲测/周考"      → Mode B 每周大考（6 条隐数据盲测）
+"网感进度/我的段位"   → Mode C 查进度（只读，无副作用）
+"拆解这条"+链接       → Mode D 自喂拆解（防刷分：单日入账上限 30 XP）</code></pre>
+
+<h2>3. Mode A · 每日练功流程</h2>
+<ol>
+  <li>脚本捞取 3 条赛道热门（封面/标题/时长/简介，<strong>隐去播放量</strong>）；脚本失败自动转用户自喂</li>
+  <li>用户按<strong>拆解卡五字段</strong>作答：钩子类型 / 情绪曲线 / 划走点 / 传播点 / 可偷的 pattern</li>
+  <li>按四维 rubric 打分（各 0-5）+ 点评：<strong>每条点评必须指出 ≥1 个用户漏掉的点</strong>；基于元数据的判断一律标注"推断"</li>
+  <li>结算入账：四维 XP 累加；连击 streak 逢 7 倍数 +20 XP；高分 pattern 自动收录进 pattern 库</li>
+  <li>输出战报：得分、XP、streak、距下一段位进度条；≥7 天没大考会提醒</li>
+</ol>
+
+<h2>4. Mode B · 每周大考（盲测校准）</h2>
+<blockquote><strong>密封纪律</strong>：用户提交全部预测之前，系统严禁读取答案文件，连 reveal 命令都不许跑——防自欺是训练有效的前提。</blockquote>
+<ul>
+  <li>6 条隐数据题（A-F 洗牌、UP 主匿名）：预测 top3 排名 + 每条量级（&lt;1w / 1-10w / 10-100w / 100w+）+ 预测理由</li>
+  <li>计分公式：top3 命中（≤30）+ 排序分（≤10）+ 量级准确（≤10）= 数据直觉 XP（≤50）；理由质量反哺钩子/情绪/划走点三维</li>
+  <li>产出偏差复盘：系统性高估/低估哪类内容（标题党？封面朴素选题硬？时长信号？）→ 下周练功侧重点</li>
+</ul>
+
+<h2>5. 游戏化状态机</h2>
+<pre><code>state.json
+ ├─ xp: {hook, emotion, dropout, pattern, data}   ← 五维独立成长
+ ├─ rank: 青铜→…（按总 XP 段位表定级）
+ ├─ streak / best_streak                          ← 连击与最佳纪录
+ ├─ sessions / exams / patterns_count             ← 累计场次
+ └─ pending.json                                  ← 断点续跑状态</code></pre>
+<table>
+  <tr><th>五维</th><th>训练的能力</th></tr>
+  <tr><td>🎯 钩子识别</td><td>前 3 秒留人力判断</td></tr>
+  <tr><td>💓 情绪洞察</td><td>情绪曲线设计与共鸣点识别</td></tr>
+  <tr><td>✂️ 划走点预判</td><td>流失节点的结构性感知</td></tr>
+  <tr><td>🧩 pattern 提炼</td><td>从个案抽象可复用模式</td></tr>
+  <tr><td>📊 数据直觉</td><td>播放量量级预测（大考专属，≥2 次大考才参与短板比较）</td></tr>
+</table>
+
+<h2>6. 评分纪律（防自欺机制）</h2>
+<ol>
+  <li>打分只看<strong>推理质量</strong>，不猜用户爱听的；rubric 锚点固定，不膨胀</li>
+  <li>每条点评必须指出 ≥1 个漏点；全对也要给"还能再深一层"的追问</li>
+  <li>用户反驳有理 → 当场改分，并把修正依据追加到 rubric 笔记（可审计）</li>
+  <li>大考答案密封期绝不读答案、绝不暗示量级</li>
+  <li>自喂模式单日入账上限 30 XP，防刷分</li>
+</ol>
+
+<h2>7. 设计亮点</h2>
+<div class="cards">
+  <div class="card"><div class="t">盲测校准</div><div class="d">用"隐数据预测 vs 真实数据"量化网感，偏差可视化，告别"我觉得能火"</div></div>
+  <div class="card"><div class="t">防自欺设计</div><div class="d">密封答案、rubric 锚点、反驳改分留痕——训练系统的诚实性工程</div></div>
+  <div class="card"><div class="t">状态机持久化</div><div class="d">XP/段位/连击/断点全持久化，跨会话连续成长，agent 无记忆也能接续</div></div>
+  <div class="card"><div class="t">降级与防刷</div><div class="d">脚本失败转自喂、开卷检测、自喂上限——边界情况全部有预案</div></div>
+</div>
+
+<div class="doc-foot"><span>wanggan-dojo · Agent Skill 设计文档 · 唐浩翔</span><span>技能库：网感+流量洞察（训练器）</span></div>
+</body>
+</html>

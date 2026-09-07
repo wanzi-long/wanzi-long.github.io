@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><title>interview-prep 面试作战系统 · 设计文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+@media screen {
+  body { font-size: 15px; line-height: 1.75; max-width: 880px; margin: 0 auto; padding: 0 20px 64px; background: #f4f9fb; }
+  h2 { font-size: 18px; margin: 22px 0 9px; }
+  h3 { font-size: 15.5px; }
+  table { font-size: 14px; }
+  .doc-head { margin-top: 18px; }
+  pre { overflow-x: auto; }
+}
+.site-bar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 20px; margin: 0 -20px 4px; background: rgba(255,255,255,.85); backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(8,80,110,.12); font-family: "PingFang SC","Microsoft YaHei",sans-serif; }
+.site-bar .l { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.site-bar a { text-decoration: none; }
+.site-bar a.back { color: #0e7a9c; font-size: 13.5px; font-weight: 600; white-space: nowrap; }
+.site-bar h1 { font-size: 15px; color: #12222e; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.site-bar .r { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.site-bar a.pdf { padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(14,122,156,.35); color: #0e7a9c; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.site-bar a.home { padding: 7px 16px; border-radius: 999px; background: #0e7a9c; color: #fff; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+@media (max-width: 720px) { .site-bar { padding: 10px 12px; } .site-bar h1 { font-size: 13px; } .site-bar a.pdf { display: none; } }
+</style>
+</head>
+<body class="theme-blue">
+<div class="site-bar"><div class="l"><a class="back" href="/#skills">← 返回 Skill 合集</a><h1>interview-prep · 面试作战系统</h1></div><div class="r"><a class="pdf" href="/docs/skill-02-interview-prep.pdf" target="_blank" rel="noopener">PDF 附件</a><a class="home" href="/">简历站首页</a></div></div>
+
+
+<div class="doc-head">
+  <div class="kicker">AI AGENT SKILL · 求职自动化 · RAG</div>
+  <h1>面试作战系统（interview-prep）</h1>
+  <div class="tagline">给一家公司 + 一个岗位，30-40 分钟全自动产出全套面试作战包；给面试录音，出复盘并把经验回写档案——每面一场，档案厚一层。</div>
+  <div class="meta">
+    <span>作者：唐浩翔</span><span>GitHub：wanzi-long/interview-prep（开源）</span>
+    <span>形态：Claude Code / SKILL.md 格式 Agent 技能</span><span>经真实面试全流程实战验证</span>
+  </div>
+</div>
+
+<h2>1. 系统定位</h2>
+<blockquote>源于 2026-08 真实面试全流程实战验证。把求职准备从"人肉熬夜查公司、想问题"变成"喂给 Agent 公司名 + 岗位名，自动产出全套弹药"。</blockquote>
+<div class="cards">
+  <div class="card"><div class="t">面试前</div><div class="d">公司+岗位 → 公司调研 / 财务分析 / 行业调研 PDF / 岗位分析 / S·A·B·C 四级定制题库 / 岗位特化简历 / 作战手册 / Gemini 模拟面试脚本</div></div>
+  <div class="card"><div class="t">面试后</div><div class="d">录音 ASR 转写 → 逐题拆解失分点 → 新考题 / 新故事回写档案与总题库（RAG 式成长）</div></div>
+  <div class="card"><div class="t">零冷启动</div><div class="d">无档案用户由 Agent 引导建档：旧简历自动解析，或回答 6-8 个问题成档，缺口用【待补】占位先开跑</div></div>
+</div>
+
+<h2>2. 设计铁律</h2>
+<ol>
+  <li><strong>真实红线</strong>：话术、简历、报告中的所有经历/数字/成果必须来自个人档案，<span class="hl">禁止编造</span>——档案三要素（量化战绩 / STAR 故事 / 软肋清单）是系统"不虚构"的根基</li>
+  <li><strong>成本红线</strong>：语音转写只走免费额度通道，调用前先查额度；付费资源一律禁区</li>
+  <li><strong>用户硬约束可配置</strong>：按个人情况内置约束（示例：口语弱 → 只接异步文字类机会，不设计口语环节）</li>
+  <li><strong>隐私红线</strong>：录音 / 简历 / 档案只本地处理，不外发</li>
+</ol>
+
+<h2>3. 启动自检与降级链</h2>
+<p>5 秒自检，缺则自动降级、<strong>不中断</strong>主流程：</p>
+<table>
+  <tr><th>工具</th><th>作用</th><th>降级方案</th></tr>
+  <tr><td>企查查 CLI</td><td>国内企业全方位审查（工商/股东/司法风险 35 项）</td><td>→ 博查 API</td></tr>
+  <tr><td>博查 API</td><td>国内公司检索兜底</td><td>→ Tavily / Brave</td></tr>
+  <tr><td>Brave API</td><td>外企信息辅助</td><td>→ Tavily</td></tr>
+  <tr><td>豆包语音</td><td>HR 通话 / 面试录音 ASR</td><td>→ 无录音环节时跳过</td></tr>
+  <tr><td>Chrome</td><td>简历 / 报告 PDF 渲染</td><td>→ 只出 HTML</td></tr>
+</table>
+
+<h2>4. 四阶段流水线</h2>
+<table>
+  <tr><th style="width:16%">阶段</th><th>产出</th></tr>
+  <tr><td>① 情报采集</td><td>上市判定分流：上市→年报/行情/研报（营收、毛利率、逐年同比）；未上市→工商+司法风险全扫。官网抓取（GBK 站点先转码）、HR 录音 ASR</td></tr>
+  <tr><td>② 分析合成</td><td>JD 拆解 / 薪资结构 / 考核逻辑 / 面试官画像；弹药自检（先读档案，缺要素先问用户补齐）；S/A/B/C 四级题库，每题 = 考察本质 + 深度拆解 + 定制话术 + 补丁</td></tr>
+  <tr><td>③ 武器与演练</td><td>岗位特化简历（HTML 渲染源 → PDF，交付仅 PDF）；A4 排版行业调研报告（口径标注、严禁出现求职用途字样）；作战手册 + 模拟面试提示词 + 群面专项 + 跟进话术库</td></tr>
+  <tr><td>④ 实战复盘</td><td>录音 → ASR → 逐题拆解（问了什么/答了什么/失分点/修正话术）→ 复盘报告；自动归档简历、刷新总索引；新考题/新失分点/新故事<strong>回写档案库</strong></td></tr>
+</table>
+
+<h2>5. 档案 RAG —— 本系统的发动机</h2>
+<pre><code>面试前：读个人长期档案（主库·含硬约束）+ 面试专用补丁档案
+        三要素自检：量化战绩？STAR 故事？软肋清单？缺 → 问用户补齐，绝不硬编
+面试后：复盘产出自动回写两个档案库
+        新考题 → 总题库 ｜ 新失分点/新故事素材 → 个人档案
+        ⇒ 每面一场，档案厚一层，下一场更强</code></pre>
+
+<h2>6. 岗位分流器</h2>
+<table>
+  <tr><th>岗位类型</th><th>题库侧重</th><th>武器侧重</th></tr>
+  <tr><td>销售 / 业务类</td><td>电销话术、情景实战（客户角色扮演）、阶梯式成交认知</td><td>业绩数字前置</td></tr>
+  <tr><td>技术类（运维 / AI 实施）</td><td>项目 STAR 深问、技术栈匹配、排障思路</td><td>项目验证数据前置</td></tr>
+  <tr><td>其他 / 运营类</td><td>通用行为面 + 岗位认知</td><td>按 JD 关键词重排简历</td></tr>
+</table>
+<p>分流器只影响 ②③ 的侧重点；①情报采集与④复盘全岗位共用。</p>
+
+<h2>7. 工程细节亮点</h2>
+<ul>
+  <li><strong>编号化交付物目录</strong>：每家公司一个作战目录（00 执行蓝图 → 15 总览索引），跨场次可检索、可复用</li>
+  <li><strong>免确认直跑</strong>：全流程不问中间确认，只在"正式投递 / 约面试 / 个人信息外发"三个点停下——自动化与风险控制的分界设计</li>
+  <li><strong>报告口径纪律</strong>：行业调研报告严禁出现面试/求职用途字样，可直接当正经行业报告用</li>
+  <li><strong>防覆盖机制</strong>：简历归档带日期戳，总索引脚本自动扫描全部场次生成</li>
+</ul>
+
+<div class="doc-foot"><span>interview-prep · Agent Skill 设计文档 · 唐浩翔</span><span>github.com/wanzi-long/interview-prep</span></div>
+</body>
+</html>

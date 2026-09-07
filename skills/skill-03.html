@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><title>voice-sync-video 音画同步视频管线 · 设计文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+@media screen {
+  body { font-size: 15px; line-height: 1.75; max-width: 880px; margin: 0 auto; padding: 0 20px 64px; background: #f4f9fb; }
+  h2 { font-size: 18px; margin: 22px 0 9px; }
+  h3 { font-size: 15.5px; }
+  table { font-size: 14px; }
+  .doc-head { margin-top: 18px; }
+  pre { overflow-x: auto; }
+}
+.site-bar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 20px; margin: 0 -20px 4px; background: rgba(255,255,255,.85); backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(8,80,110,.12); font-family: "PingFang SC","Microsoft YaHei",sans-serif; }
+.site-bar .l { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.site-bar a { text-decoration: none; }
+.site-bar a.back { color: #0e7a9c; font-size: 13.5px; font-weight: 600; white-space: nowrap; }
+.site-bar h1 { font-size: 15px; color: #12222e; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.site-bar .r { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.site-bar a.pdf { padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(14,122,156,.35); color: #0e7a9c; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.site-bar a.home { padding: 7px 16px; border-radius: 999px; background: #0e7a9c; color: #fff; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+@media (max-width: 720px) { .site-bar { padding: 10px 12px; } .site-bar h1 { font-size: 13px; } .site-bar a.pdf { display: none; } }
+</style>
+</head>
+<body class="theme-green">
+<div class="site-bar"><div class="l"><a class="back" href="/#skills">← 返回 Skill 合集</a><h1>voice-sync-video · 音画同步视频管线</h1></div><div class="r"><a class="pdf" href="/docs/skill-03-voice-sync-video.pdf" target="_blank" rel="noopener">PDF 附件</a><a class="home" href="/">简历站首页</a></div></div>
+
+
+<div class="doc-head">
+  <div class="kicker">AI AGENT SKILL · 视频生产管线 · Remotion</div>
+  <h1>voice-sync-video · 音画同步视频生产管线</h1>
+  <div class="tagline">把"一段文案 + 一个产品"变成"配音和动画严格同步的成片"——场景边界 = TTS 句级时间戳，物理上杜绝音画跑偏。</div>
+  <div class="meta">
+    <span>作者：唐浩翔</span><span>形态：Agent 技能（SKILL.md）</span>
+    <span>Remotion / HyperFrames · TTS · 句级时间戳</span><span>6 个人工硬闸门</span>
+  </div>
+</div>
+
+<h2>1. 核心机制：时间戳是地基</h2>
+<pre><code>TTS 合成时开启「字幕/时间戳」选项
+  → 官方句级 time_begin / time_end（如 MiniMax subtitle_enable=true）
+  → 换算帧号写入 timing.ts（唯一事实来源）
+  → 场景边界 = 句边界，字幕条读同一份时间戳
+降级链：配音无时间戳 → ASR 回识别取句级时间戳 → 仍不行才按字数比例估算并明确标注"降级"</code></pre>
+<p>传统做法是按字数/感觉估算对齐，本管线<strong>把对齐建立在 TTS 官方时间戳上</strong>，音画同步从"调出来的"变成"结构保证的"。</p>
+
+<h2>2. 五条铁律</h2>
+<ol>
+  <li><strong>闸门必停</strong>：标记 <span class="badge b-red">🔴</span> 的环节必须停下来等用户拍板，禁止自作主张直出</li>
+  <li><strong>时间戳是硬约束</strong>：禁止按字数/感觉估算对齐</li>
+  <li><strong>收费 TTS 先探针</strong>：按量计费的 TTS 先发 1 条最短探针并<strong>报价格</strong>，用户点头才批量（源自一次 10 分钟欠费 ¥21.5 的真实事故）</li>
+  <li><strong>静帧 QA 必做</strong>：全片渲染前必须出关键帧静图过目——印章压字、元素错位都是静帧抓出来的</li>
+  <li><strong>配音变 → 节奏重排</strong>：换音色/改稿后必须重取时间戳并重排每个场景的内部动画</li>
+</ol>
+
+<h2>3. 流程总览：13 步 · 6 个硬闸门</h2>
+<table>
+  <tr><th style="width:6%">#</th><th style="width:22%">环节</th><th style="width:8%">闸门</th><th>干什么</th></tr>
+  <tr><td>A</td><td>事实核查+素材盘点</td><td><span class="badge b-grn">🟢</span></td><td>提取"可验证卖点"，记录出处</td></tr>
+  <tr><td>B</td><td>叙事方向卡</td><td><span class="badge b-red">🔴</span></td><td>3-4 张方向卡（判断流/团队流/演示流/纪录流），用户选</td></tr>
+  <tr><td>C</td><td>口播稿+目标时长</td><td><span class="badge b-red">🔴</span></td><td>文案优先于凑秒数</td></tr>
+  <tr><td>D</td><td>语音双问</td><td><span class="badge b-red">🔴</span></td><td>先问"要不要配音"，再问"用哪种 TTS"</td></tr>
+  <tr><td>E</td><td>TTS 合成</td><td><span class="badge b-grn">🟢</span></td><td>整段一次出，不拆剪不加速</td></tr>
+  <tr><td>F</td><td>实际时长确认</td><td><span class="badge b-yel">🟡 软</span></td><td>偏差 &gt;10% 才打断用户</td></tr>
+  <tr><td>G</td><td>美术方向卡</td><td><span class="badge b-red">🔴</span></td><td>风格库推荐 + 组件仓配候选，附"自定义"出口</td></tr>
+  <tr><td>H</td><td>分镜表</td><td><span class="badge b-yel">🟡 软</span></td><td>场景×时间戳×演什么，一张表展示</td></tr>
+  <tr><td>I</td><td>场景开发</td><td><span class="badge b-grn">🟢</span></td><td>每句文案一个场景；优先取组件仓冻结组件改参数，新写的按 SOP 回收入库</td></tr>
+  <tr><td>J</td><td>静帧 QA</td><td><span class="badge b-red">🔴</span></td><td>LLM 先按审美细则自评打分，&lt;7 自动修（最多 2 轮），评分随图呈报</td></tr>
+  <tr><td>K</td><td>渲染</td><td><span class="badge b-grn">🟢</span></td><td>先 6 秒冒烟（验音轨/运动），再全片</td></tr>
+  <tr><td>L</td><td>成片 QA+终审</td><td><span class="badge b-red">🔴</span></td><td>ffprobe 双流校验 + 抽帧报告，用户终审</td></tr>
+  <tr><td>M</td><td>清理+交付</td><td><span class="badge b-grn">🟢</span></td><td>留成片+配音+工程+溯源清单</td></tr>
+</table>
+<blockquote>设计哲学：<strong>AI 不一股脑直出</strong>。6 个硬闸门把"叙事方向、口播稿、配音、美术风格、静帧、终审"的决策权留给人类，自动化只负责执行层。</blockquote>
+
+<h2>4. 组件资产复用（motion-material-hub 对接）</h2>
+<ul>
+  <li><strong>23 个零依赖确定性组件</strong>：帧驱动、任意帧可 seek、无 gsap/motion 依赖，复制进工程即用——时间参数全部帧数，对时间戳天然友好</li>
+  <li><strong>六环调用法</strong>：G 环节选款 → I 环节装配调参 → J 环节静帧 QA，形成闭环</li>
+  <li><strong>审美评分细则（taste-rubric）</strong>：选款排序与静帧自评共用同一把尺，&lt;7 分自动返修</li>
+  <li><strong>新组件回收入库</strong>：项目中新写的组件按 porting-sop 沉淀回组件仓，资产越用越厚</li>
+</ul>
+
+<h2>5. 技术栈与交付物</h2>
+<table>
+  <tr><th style="width:22%">维度</th><th>选项（让用户选，不猜）</th></tr>
+  <tr><td>引擎</td><td>Remotion（默认，实战验证过）/ HyperFrames</td></tr>
+  <tr><td>画幅</td><td>16:9 1920×1080（默认）/ 9:16 / 1:1</td></tr>
+  <tr><td>帧率</td><td>30fps（默认）/ 60fps（弱机讨论云端渲染）</td></tr>
+  <tr><td>字幕</td><td>同步字幕条（默认）/ 无字幕</td></tr>
+  <tr><td>配音</td><td>要（选 TTS 链路）/ 不要（纯视觉片）</td></tr>
+</table>
+<p><strong>交付全家桶</strong>：成片 MP4 + 配音音频 + 字幕/时间戳文件 + 工程源码 + 溯源清单（每项素材声明出处，概念素材明确标注）。</p>
+
+<div class="doc-foot"><span>voice-sync-video · Agent Skill 设计文档 · 唐浩翔</span><span>技能库：vibe motion视频流程卡/voice-sync-video</span></div>
+</body>
+</html>

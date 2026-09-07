@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><title>maruko-voice 项目 SOP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+@media screen {
+  body { font-size: 15px; line-height: 1.75; max-width: 880px; margin: 0 auto; padding: 0 20px 64px; background: #f4f9fb; }
+  h2 { font-size: 18px; margin: 22px 0 9px; }
+  h3 { font-size: 15.5px; }
+  table { font-size: 14px; }
+  .doc-head { margin-top: 18px; }
+  pre { overflow-x: auto; }
+}
+.site-bar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 20px; margin: 0 -20px 4px; background: rgba(255,255,255,.85); backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(8,80,110,.12); font-family: "PingFang SC","Microsoft YaHei",sans-serif; }
+.site-bar .l { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.site-bar a { text-decoration: none; }
+.site-bar a.back { color: #0e7a9c; font-size: 13.5px; font-weight: 600; white-space: nowrap; }
+.site-bar h1 { font-size: 15px; color: #12222e; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.site-bar .r { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.site-bar a.pdf { padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(14,122,156,.35); color: #0e7a9c; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.site-bar a.home { padding: 7px 16px; border-radius: 999px; background: #0e7a9c; color: #fff; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+@media (max-width: 720px) { .site-bar { padding: 10px 12px; } .site-bar h1 { font-size: 13px; } .site-bar a.pdf { display: none; } }
+</style>
+</head>
+<body class="theme-violet">
+<div class="site-bar"><div class="l"><a class="back" href="/#skills">← 返回 Skill 合集</a><h1>maruko-voice · 项目 SOP</h1></div><div class="r"><a class="pdf" href="/docs/skill-01-maruko-voice-sop.pdf" target="_blank" rel="noopener">PDF 附件</a><a class="home" href="/">简历站首页</a></div></div>
+
+
+<div class="doc-head">
+  <div class="kicker">PROJECT SOP · 桌面应用 · 开源发布</div>
+  <h1>maruko 的幻听 🌌 · 项目标准作业流程</h1>
+  <div class="tagline">完全离线的 Windows 桌面语音输入挂件：悬浮银河光球 · 中英双语 · 说完 ~0.3s 上屏 · 零网络请求</div>
+  <div class="meta">
+    <span>作者：唐浩翔</span><span>GitHub：wanzi-long/maruko-voice（MIT 开源）</span>
+    <span>当前版本：v2.6.2</span><span>PySide6 · sherpa-onnx · numpy · NSIS</span>
+  </div>
+</div>
+
+<h2>1. 项目概述</h2>
+<p><strong>一句话定位</strong>：按住热键对电脑说话，一颗银河光球浮现，话音落下，文字已进光标——全程离线，模型全内置。</p>
+<table>
+  <tr><th style="width:22%">能力</th><th>实现</th></tr>
+  <tr><td>🎙️ 流式语音识别</td><td>sherpa-onnx 流式 Paraformer（中英双语），说完 ~0.3s 文字上屏</td></tr>
+  <tr><td>🌌 悬浮银河光球</td><td>纯 CPU 渲染螺旋星系：随音量加速旋转、星核越说越亮、星点常驻微闪；无背板无边框直接悬浮桌面</td></tr>
+  <tr><td>🔢 自研轻量 ITN</td><td>中英数字混搭归一化：三点→3点 · 一万两千八百→12800 · 艾特→@ · 百分之七十→70% · g p t→gpt</td></tr>
+  <tr><td>📝 自动标点</td><td>CT-Transformer 标点恢复（int8 量化，~0.01s）</td></tr>
+  <tr><td>⌨️ 双模式热键</td><td>开关式 / 长按式，支持 Ctrl+Shift+Space 等组合键自定义</td></tr>
+  <tr><td>🎨 皮肤 ×4</td><td>天际蓝 / 星云紫 / 青翠绿 / 落日渐橙，设置页实时预览</td></tr>
+  <tr><td>🔊 宇宙系音效</td><td>流星降临 / 星核回响 / 坠入虚空，numpy 程序化合成</td></tr>
+  <tr><td>🗣️ 个人词库</td><td>"错词=正确写法"逐行配置，上屏前自动替换</td></tr>
+  <tr><td>🔒 完全离线</td><td>本地 CPU 推理，零网络请求，隐私零出机</td></tr>
+</table>
+
+<h2>2. 系统架构</h2>
+<pre><code>热键监听（hotkey.py，双模式）
+   │ 按下 → 播放开始音效 → 光球浮现
+   ▼
+音频采集 ──▶ sherpa-onnx 流式 Paraformer（中英双语 ASR）
+   │              │ 部分结果实时驱动光球（音量→转速/亮度）
+   │              ▼
+   │        句末判定 → 自研 ITN 数字/符号归一化（itn.py）
+   │              ▼
+   │        CT-Transformer 标点恢复（int8）
+   │              ▼
+   │        个人词库替换 → 模拟键入上屏 → 完成音效 → 写入历史(20条)
+   ▼
+UI 层（app.py · PySide6）：悬浮球 / 托盘菜单 / 设置页 / 4 皮肤
+渲染层：numpy 纯 CPU 螺旋星系渲染，沉默时自动降帧省电（v2.6.2）</code></pre>
+
+<h2>3. 安装部署 SOP</h2>
+<h3>3.1 安装包方式（推荐分发）</h3>
+<ol>
+  <li>从 Releases 下载 <code>maruko-voice-setup.exe</code>（NSIS 打包，installer.nsi）</li>
+  <li>安装路径可选，默认免管理员权限</li>
+  <li>自动创建桌面/开始菜单快捷方式、控制面板卸载入口，可选开机自启</li>
+</ol>
+<h3>3.2 绿色便携方式</h3>
+<ol>
+  <li>下载单文件 <code>语音挂件.exe</code>（~365MB，模型内置）</li>
+  <li>双击即用，零安装，适合 U 盘携带</li>
+</ol>
+<h3>3.3 首次启动检查点</h3>
+<ul>
+  <li>托盘出现光球图标即就绪（首次约 5 秒加载模型）</li>
+  <li>单实例互斥锁生效（v2.6.2）：重复启动不会双开</li>
+</ul>
+
+<h2>4. 日常使用 SOP</h2>
+<table>
+  <tr><th style="width:26%">步骤</th><th>操作</th></tr>
+  <tr><td>1 · 定位光标</td><td>点击任意输入框</td></tr>
+  <tr><td>2 · 开始</td><td>按一下 <strong>F9</strong>（可自定义）→ 银河球浮现，开始说话</td></tr>
+  <tr><td>3 · 结束</td><td>再按一下 F9（长按模式：松手即结束）→ 文字自动打进光标</td></tr>
+  <tr><td>4 · 取消</td><td>Esc 或点一下光球；拖动光球可移动位置</td></tr>
+  <tr><td>5 · 纠词</td><td>识别错的词写入个人词库（错词=正确写法），下次自动修正</td></tr>
+  <tr><td>6 · 回溯</td><td>托盘菜单查最近 20 条历史，一键复制</td></tr>
+</table>
+
+<h2>5. 运维与排障 SOP</h2>
+<table>
+  <tr><th style="width:30%">症状</th><th>处置</th></tr>
+  <tr><td>双击无反应</td><td>检查是否已有实例运行（单实例互斥锁），托盘找图标</td></tr>
+  <tr><td>首次启动慢</td><td>正常现象：模型加载约 5 秒，后续热启动</td></tr>
+  <tr><td>占用偏高</td><td>确认 v2.6.2+：沉默时星系渲染自动降帧；关闭设置页预览</td></tr>
+  <tr><td>专有名词识别错</td><td>进个人词库加映射，无需重训模型</td></tr>
+  <tr><td>热键冲突</td><td>设置页改组合键（如 Ctrl+Shift+Space）</td></tr>
+</table>
+
+<h2>6. 版本发布 SOP</h2>
+<ol>
+  <li><strong>版本号</strong>：语义化 vX.Y.Z，变更写入提交信息（示例：v2.6.2 单实例互斥锁防双开 + 沉默降帧省 CPU）</li>
+  <li><strong>打包</strong>：NSIS 生成 <code>maruko-voice-setup.exe</code>；另出单文件便携版 <code>语音挂件.exe</code></li>
+  <li><strong>发布</strong>：GitHub Releases 双附件上传，README 安装指引同步核对</li>
+  <li><strong>回滚</strong>：旧版本 Release 保留，问题版本标注 deprecated</li>
+</ol>
+
+<h2>7. 开源合规</h2>
+<ul>
+  <li>原始雏形：Jonas-Willems/Speech_to_Text（MIT）</li>
+  <li>光球灵感：reactbits.dev Orb / Galaxy（仅作产品一部分使用）</li>
+  <li>模型：sherpa-onnx · Paraformer 中英双语 · CT-Transformer 标点（Apache 2.0）</li>
+  <li>本项目以 MIT 发布，NOTICE 保留上游署名</li>
+</ul>
+
+<div class="doc-foot"><span>maruko-voice · 项目 SOP · 唐浩翔</span><span>github.com/wanzi-long/maruko-voice</span></div>
+</body>
+</html>
