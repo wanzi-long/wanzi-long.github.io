@@ -1,0 +1,6 @@
+/* 自托管字体（子集化可变字体 woff2，覆盖全站实际用字） */
+@font-face{font-family:"Playfair Display";font-style:normal;font-weight:400 600;font-display:swap;src:url("/fonts/playfair-display.woff2") format("woff2-variations"),url("/fonts/playfair-display.woff2") format("woff2")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:300 600;font-display:swap;src:url("/fonts/inter.woff2") format("woff2-variations"),url("/fonts/inter.woff2") format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-style:normal;font-weight:400 600;font-display:swap;src:url("/fonts/jetbrains-mono.woff2") format("woff2-variations"),url("/fonts/jetbrains-mono.woff2") format("woff2")}
+@font-face{font-family:"Noto Serif SC";font-style:normal;font-weight:400 600;font-display:swap;src:url("/fonts/noto-serif-sc.woff2") format("woff2-variations"),url("/fonts/noto-serif-sc.woff2") format("woff2")}
+@font-face{font-family:"Noto Sans SC";font-style:normal;font-weight:400 700;font-display:swap;src:url("/fonts/noto-sans-sc.woff2") format("woff2-variations"),url("/fonts/noto-sans-sc.woff2") format("woff2")}
